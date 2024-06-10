@@ -1,0 +1,32 @@
+{
+  "name": "test-merryriana-backend",
+  "version": "1.0.0",
+  "description": "Merry Riana Backend Test",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "lint:fix": "eslint --fix index.js src/**/*.js",
+    "lint": "eslint index.js src/**/*.js"
+  },
+  "keywords": [],
+  "author": "arthuriski",
+  "license": "ISC",
+  "dependencies": {
+    "argon2": "^0.40.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-validator": "^7.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "multer-storage-cloudinary": "^4.0.0",
+    "pg": "^8.12.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.4.0",
+    "eslint": "^9.4.0",
+    "globals": "^15.4.0",
+    "nodemon": "^3.1.3"
+  }
+}
