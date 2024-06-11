@@ -42,6 +42,9 @@ exports.findOneByUserId = async function(user_id){
     FROM "${table}" "p"
     JOIN "user" "u" ON "u"."id" = "p"."user_id"
     WHERE "p"."user_id"=$1
+    GROUP BY "u"."id", "p"."full_name", "p"."username",
+    "u"."email",
+    "p"."job"
     `
     //Join dari tabel Users , dimana users.id nya = table profile.userId
     //tidak perlu * , ,karena ingin mengambil kolom tertentu saja (bukan semua kolom)

@@ -7,7 +7,9 @@ router.get("/", (req, res) => {
   })
 })
 
+router.use("/admin", require("./admin/admin.router"))
 router.use("/auth", require("./auth.router"))
+router.use("/profile", require("./profile.router"))
 
 
 router.use("*", (req, res) => {
