@@ -1,6 +1,7 @@
 const authModel = require("../models/auth.model.js")
 const profileModel = require("../models/profile.model")
 const forgotRequestModel = require("../models/forgotRequest.model.js")
+const roleModel = require("../models/role.model.js")
 const errorHandler = require("../helpers/errorHandler.helper.js")
 const jwt = require("jsonwebtoken")
 const {APP_SECRET} = process.env
@@ -9,39 +10,58 @@ const argon = require("argon2")
 exports.login = async (req, res) => {
     try {
         const {email, password} = req.body
+        // console.log(email, password)
         const user = await authModel.findOneByEmail(email)
-        console.log(user)
+        // console.log(user)
         if(!user){
             throw Error("wrong_credentials")
         }
         const verify = await argon.verify(user.password, password)
-        console.log(verify)
-        console.log(password)   
-        console.log(user.password)   
+        // console.log(verify)
+        // console.log(password)   
+        // console.log(user.password)   
         if(!verify){
             throw Error("wrong_credentials")
         }
-        const token = jwt.sign({id: user.id}, APP_SECRET)
+        const token = jwt.sign({id: user.id, role: user.role_id}, APP_SECRET)
+        // console.log("middleware token", req.user)
+        // console.log('tetetes')
+        const roleData = await roleModel.findOne(user.role_id)
+        console.log(user)
         return res.json({
             success: true,
             message: "Login success!",
-            results: {token}
+            results: {
+                token,
+                role: roleData.name
+            }
         })
     } catch(err) {
         return errorHandler(res, err)
     }
 }
 
+// ADMIN ONLY
 exports.register = async (req, res) => {
     try {
-        const {full_name, password, confirm_password} = req.body
+        const {role} = req.user
+        if(role !== 1) {
+          throw Error('unauthorized_user');
+        }
+        const {full_name, role_id, password, confirm_password} = req.body
         if(password !== confirm_password) {
-            throw Error("password_unmatch")
+          throw Error("password_unmatch")
         }
         const hash = await argon.hash(password)
+
+        const roleData = await roleModel.findOne(parseInt(role_id))
+        if(!roleData){
+          throw Error("role_is_not_registered")
+        }
         const data = {
             ...req.body,
-            password: hash
+            password: hash,
+            role_id: roleData.id
         }
         const user = await authModel.insert(data) //insert ke table users
         const profileData = {
@@ -59,6 +79,7 @@ exports.register = async (req, res) => {
         return errorHandler(res, err)
     }
 }
+
 exports.forgotPassword = async (req, res) => {
     try {
         const {email} = req.body

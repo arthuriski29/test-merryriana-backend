@@ -39,14 +39,32 @@ exports.findOneByEmail = async function(email){
     const {rows} = await db.query(query, values)
     return rows[0]
 }
+exports.findOneByEmailShowRole = async function(email){
+    const query = `
+    SELECT 
+        "u"."id", 
+        "u"."email", 
+        "u"."password", 
+        "r"."name" as "role"
+    FROM "user" "u"
+    JOIN "role" "r" ON "u"."role_id" = "r"."id"
+    WHERE "u"."email" = $1
+    GROUP BY
+        "r"."id",
+        "u"."id"
+    `
+    const values = [email]
+    const {rows} = await db.query(query, values)
+    return rows[0]
+}
  
 
 exports.insert = async function(data){
     const query = `
-    INSERT INTO "${table}" (, "email", "password") 
-    VALUES ($1, $2) RETURNING *
+    INSERT INTO "${table}" ("email", "password", "role_id") 
+    VALUES ($1, $2, $3) RETURNING *
     `  
-    const values = [data.email, data.password]   
+    const values = [data.email, data.password, data.role_id]   
     const {rows} = await db.query(query, values)
     return rows[0]
 }
