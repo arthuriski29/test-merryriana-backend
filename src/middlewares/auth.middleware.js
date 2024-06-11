@@ -11,6 +11,7 @@ const authMiddleware = (req, res, next) => {
         }
         const token = auth.slice(7)
         req.user = jwt.verify(token, APP_SECRET)
+        console.log('di authmiddleware', req.user)
         return next()
     } catch(err){
         return errorHandler(res, err)
