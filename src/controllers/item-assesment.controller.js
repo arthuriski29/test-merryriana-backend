@@ -1,7 +1,52 @@
 const errorHandler = require("../helpers/errorHandler.helper")
 const itemModel = require("../models/item-assesment.model")
+// const approveModel = require("../models/approval.model")
+const rejectModel = require("../models/reject-massage.model")
+
+//FOR ALL ROLE REGOISTERED
+exports.getAll = async(req, res) => {
+  try {
+    const{page, limit, search, sort, sortBy,} = req.query
+    const data = await itemModel.findAll(page, limit, search, sort, sortBy,)
+
+    if(!data){
+      throw Error("data_not_found")
+    }
+    return res.json({
+        success: true,
+        message: "List of All Items",
+        results: {
+          total_item:data.length,
+          data
+        }
+    })
 
 
+  } catch (err) {
+    return errorHandler(res, err)
+    
+  }
+}
+exports.getOne = async(req, res) => {
+  try {
+    const {id} = req.params
+    const data = await itemModel.findOneById(id)
+    if(!data){
+      throw Error("data_not_found")
+    }
+    return res.json({
+        success: true,
+        message: "List of All Items",
+        results: data
+    })
+
+  } catch (err) {
+    return errorHandler(res, err)
+    
+  }
+}
+
+// OFFICER
 exports.createItemOfficer = async (req, res) => {
   try {
 
@@ -63,11 +108,14 @@ exports.getItemOfficer = async(req, res) => {
 
     if(!data){
       throw Error("data_not_found")
-  }
+    }
   return res.json({
       success: true,
       message: "List of All Items",
-      results: data
+      results: {
+        total_item:data.length,
+        data
+      }
   })
 
 
@@ -131,7 +179,7 @@ exports.updateItemOfficer = async(req, res) => {
     }
     if(!dataInput) throw new Error('no_update_data_found')
       
-    const data = await itemModel.update(itemId, dataInput)
+    const data = await itemModel.updateOfficer(itemId, dataInput)
     
     return res.json({
       success: true,
@@ -167,3 +215,173 @@ exports.deleteItemOfficer = async(req, res) => {
     return errorHandler(res, err)
   }
 }
+
+//MANAGER
+exports.getAllItemManager = async(req, res) => {
+  try {
+    console.log("first")
+    const {role} = req.user
+    if(!role) throw new Error('unauthorized_access');
+    if(role !==3) throw new Error('role_must_be_manager');
+
+    const{page, limit, search, sort, sortBy,} = req.query
+    const data = await itemModel.findAllForManagerToBeReview(page, limit, search, sort, sortBy,)
+
+    if(!data){
+      throw Error("data_not_found")
+    }
+    return res.json({
+        success: true,
+        message: "List of All Items",
+        results: {
+          total_item:data.length,
+          data
+        }
+    })
+  } catch (err) {
+    return errorHandler(res, err)
+  }
+}
+exports.getOneItemManager = async(req, res) => {
+  try {
+    const {role} = req.user
+    if(!role) throw new Error('unauthorized_access');
+    if(role !==3) throw new Error('role_must_be_manager');
+
+    const {id} = req.params
+    const data = await itemModel.findOneForManagerToBeReview(id)
+    if(!data){
+      throw Error("data_not_found_to_be_review")
+    }
+    return res.json({
+        success: true,
+        message: "List of All Items",
+        results: data
+    })
+
+  } catch (err) {
+    return errorHandler(res, err)
+    
+  }
+}
+exports.giveApprovalManager = async(req ,res) => {
+  try {
+    const {role, id:userId} = req.user
+    if(!role) throw new Error('unauthorized_access');
+    if(role !==3) throw new Error('role_must_be_manager');
+    
+    const {id:itemId} = req.params
+    const checkData = await itemModel.findOneForManagerToBeReview(itemId)
+    if(!checkData){
+      throw Error("data_not_found_to_be_approve")
+    }
+
+    const data ={
+      reviewed_by:userId, //BY: MANAGER
+      status_id: 2, //APPROVED STATUS: APPROVE
+    }   //KEMBALIKAN
+
+    const dataUpdate = await itemModel.updateAssesment(itemId, data)
+    if(!dataUpdate){
+      throw Error("update_approve_manager_failed")
+    }
+    return res.json({
+      success: true,
+      message: "List of All Items",
+      results: dataUpdate
+  })
+
+  } catch (err) {
+    return errorHandler(res, err)
+  }
+}
+exports.giveRejectedManager = async(req ,res) => {
+  try {
+    const {role, id:userId} = req.user
+    if(!role) throw new Error('unauthorized_access');
+    if(role !==3) throw new Error('role_must_be_manager');
+    
+    const {id:itemId} = req.params
+    const checkData = await itemModel.findOneForManagerToBeReview(itemId)
+    if(!checkData){
+      throw Error("data_not_found_to_be_reject")
+    }
+
+    const data ={
+      reviewed_by:userId, //BY: MANAGER
+      status_id: 3, //APPROVED STATUS: REJECTED
+    }
+
+    const dataUpdate = await itemModel.updateAssesment(itemId, data)
+    if(!dataUpdate){
+      throw Error("update_reject_manager_failed")
+    }
+    const dataToReject = {
+      message: req.body.message,
+      item_assesment_id: itemId
+    }
+    const toRejected = await rejectModel.insertToRejectTable(dataToReject)
+    if(!toRejected){
+      throw Error("data_is_not_inserted_to_reject_table")
+    }
+    return res.json({
+      success: true,
+      message: "List of All Items",
+      results: dataUpdate
+  })
+
+  } catch (err) {
+    return errorHandler(res, err)
+  }
+}
+
+//FINANCE
+exports.getAllItemFinance = async(req, res) => {
+  try {
+    const {role} = req.user
+    if(!role) throw new Error('unauthorized_access');
+    if(role !==4) throw new Error('role_must_be_finance');
+
+    const{page, limit, search, sort, sortBy,} = req.query
+    const data = await itemModel.findAllForFinanceToBeReview(page, limit, search, sort, sortBy,)
+
+    if(!data){
+      throw Error("data_not_found")
+    }
+    return res.json({
+        success: true,
+        message: "List of All Items",
+        results: {
+          total_item:data.length,
+          data
+        }
+    })
+  } catch (err) {
+    return errorHandler(res, err)
+  }
+}
+exports.getOneItemFinance = async(req, res) => {
+  try {
+    const {role} = req.user
+    if(!role) throw new Error('unauthorized_access');
+    if(role !==4) throw new Error('role_must_be_finance');
+
+    const {id} = req.params
+    const data = await itemModel.findOneForFinanceToBeReview(id)
+    if(!data){
+      throw Error("data_not_found_to_be_review")
+    }
+    return res.json({
+        success: true,
+        message: "List of All Items",
+        results: data
+    })
+
+  } catch (err) {
+    return errorHandler(res, err)
+    
+  }
+}
+
+
+

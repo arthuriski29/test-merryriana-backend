@@ -1,3 +1,4 @@
+
 const router = require('express').Router()
 
 router.get("/", (req, res) => {
@@ -10,7 +11,7 @@ router.get("/", (req, res) => {
 router.use("/admin", require("./admin/admin.router"))
 router.use("/auth", require("./auth.router"))
 router.use("/profile", require("./profile.router"))
-router.use("/item-list", require("./item/item-officer.router"))
+router.use("/item-list", require("./item/index"))
 
 
 router.use("*", (req, res) => {

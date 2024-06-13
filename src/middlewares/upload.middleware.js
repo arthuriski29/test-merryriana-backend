@@ -20,33 +20,18 @@ const storage = new CloudinaryStorage({
     },
 })
 
-// const storage = multer.diskStorage({
-//     destination: (request, file, cb) => {
-//         cb(null, "uploads/")
-//     },
-//     filename: (request, file, cb) => {
-//         const explode = file.originalname.split(".").length
-//         const ext = file.originalname.split(".")[explode - 1]
-//         const filename = new Date().getTime().toString() + "." + ext
-//         cb(null, filename)
-//     } 
-// })
 
 const limits = {
     fileSize: 1*1024 *1024  //mjd 1 MBytes dari Bytes
 }
 
-const fileFilter = (request, file, cb) => {
-    if(file.mimetype === "image/jpeg"){
-        cb(null, true)
-    } else if(file.mimetype === "image/jpg"){
-        cb(null, true)
-    } else if(file.mimetype === "image/png"){
-        cb(null, true)
-    } else {
-        console.log(file.mimetype)  
+const fileFilter = (req, file, cb) => {
+    const fileTypes = /jpeg|jpg|png/
+    const mimeType = fileTypes.test(file.mimetype)
+    if(!mimeType){
         cb(Error("fileformat_error"))
     }
+    cb(null, true)
 }
 
 const upload = multer({storage, limits, fileFilter})
