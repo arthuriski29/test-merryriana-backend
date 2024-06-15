@@ -17,7 +17,7 @@ exports.insertToRejectTable = async function(data) {
 
 exports.getAllRejectManager = async function(page, limit, search, sort, sortBy){
   page = parseInt(page) || 1
-  limit = parseInt(limit) || 5
+  limit = parseInt(limit) || 1000
   search = search || ""
   sort = sort || "id"
   sortBy = sortBy || "ASC"
@@ -52,7 +52,7 @@ exports.getAllRejectManager = async function(page, limit, search, sort, sortBy){
 }
 exports.getAllRejectFinance = async function(page, limit, search, sort, sortBy){
   page = parseInt(page) || 1
-  limit = parseInt(limit) || 5
+  limit = parseInt(limit) || 1000
   search = search || ""
   sort = sort || "id"
   sortBy = sortBy || "ASC"

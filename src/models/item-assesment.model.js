@@ -16,7 +16,7 @@ exports.insert = async function(data){
 
 exports.findAll = async function(page, limit, search, sort, sortBy){
   page = parseInt(page) || 1
-  limit = parseInt(limit) || 5
+  limit = parseInt(limit) || 1000
   search = search || ""
   sort = sort || "id"
   sortBy = sortBy || "ASC"
@@ -66,7 +66,7 @@ exports.findAll = async function(page, limit, search, sort, sortBy){
 }
 exports.findAllForManager = async function(page, limit, search, sort, sortBy){
   page = parseInt(page) || 1
-  limit = parseInt(limit) || 5
+  limit = parseInt(limit) || 1000
   search = search || ""
   sort = sort || "id"
   sortBy = sortBy || "ASC"
@@ -198,7 +198,7 @@ exports.updateAssesment = async function(id, data) {
 
 exports.findAllForManagerToBeReview = async function(page, limit, search, sort, sortBy){
   page = parseInt(page) || 1
-  limit = parseInt(limit) || 5
+  limit = parseInt(limit) || 1000
   search = search || ""
   sort = sort || "id"
   sortBy = sortBy || "ASC"
@@ -226,7 +226,7 @@ exports.findOneForManagerToBeReview = async function(id){
 
 exports.findDoneReviewManager = async function(page, limit, search, sort, sortBy){
   page = parseInt(page) || 1
-  limit = parseInt(limit) || 5
+  limit = parseInt(limit) || 1000
   search = search || ""
   sort = sort || "id"
   sortBy = sortBy || "ASC"
@@ -258,7 +258,7 @@ exports.findDoneReviewManager = async function(page, limit, search, sort, sortBy
 // TO BE REVIEW BY FINANCE
 exports.findAllForFinanceToBeReview = async function(page, limit, search, sort, sortBy){
   page = parseInt(page) || 1
-  limit = parseInt(limit) || 5
+  limit = parseInt(limit) || 1000
   search = search || ""
   sort = sort || "id"
   sortBy = sortBy || "ASC"
@@ -316,7 +316,7 @@ exports.findOneForFinanceToBeReview = async function(id){
 
 // exports.findAllForManagerToBeReview = async function(page, limit, search, sort, sortBy){
 //   page = parseInt(page) || 1
-//   limit = parseInt(limit) || 5
+//   limit = parseInt(limit) || 1000
 //   search = search || ""
 //   sort = sort || "id"
 //   sortBy = sortBy || "ASC"
