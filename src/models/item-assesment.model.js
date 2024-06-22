@@ -205,9 +205,41 @@ exports.findAllForManagerToBeReview = async function(page, limit, search, sort, 
   const offset = (page - 1) * limit
 
   const query = `
-  SELECT * FROM "${table}" 
-  WHERE "name" LIKE $3 AND "reviewed_by" IS NULL AND "status_id"='1'
-  ORDER BY "${sort}" ${sortBy} 
+  SELECT
+      items.id,
+      items.name,
+      items.brand,
+      items.quantity,
+      items.description,
+      items.price_per_item,
+      items.total_price,
+      items.requested_by,
+      items.reviewed_by,
+      r.name as "reviewer_role",
+      items.status_id,
+      s.name as "status_name",
+      CASE
+          WHEN items.reviewed_by IS NOT NULL THEN CONCAT(
+              'status ',
+              s.name,
+              ', by ',
+              r.name
+          )
+          ELSE CONCAT(
+              'status ',
+              s.name,
+              ', waiting for manager'
+          )
+      END AS "status_info",
+      items."createdAt",
+      items."updatedAt"
+  FROM
+      "${table}" "items"
+      LEFT JOIN "user" "u" ON items.reviewed_by = u.id
+      LEFT JOIN "role" "r" ON u.role_id = r.id
+      LEFT JOIN "status" "s" ON items.status_id = s.id
+  WHERE "items"."name" LIKE $3 AND "items"."reviewed_by" IS NULL AND "items"."status_id"='1'
+  ORDER BY "items"."${sort}" ${sortBy} 
   LIMIT $1 OFFSET $2
   `
   const values = [limit, offset, `%${search}%`]

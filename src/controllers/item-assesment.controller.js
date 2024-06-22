@@ -203,13 +203,17 @@ exports.deleteItemOfficer = async(req, res) => {
     const item_id = parseInt(itemId)
 
     const deleteItem = await itemModel.destroy(requested_by, item_id)
+    if(!deleteItem) {
+      return res.status(400).json({
+        success: false,
+        message: 'cannot_delete_this_item'
+      })
+    }
     return res.json({
       success: true,
       message: `Item ${itemId} deleted seccessfully`,
       results: deleteItem
     })
-
-    
     
   } catch (err) {
     return errorHandler(res, err)
@@ -219,7 +223,6 @@ exports.deleteItemOfficer = async(req, res) => {
 //MANAGER
 exports.getAllItemManager = async(req, res) => {
   try {
-    console.log("first")
     const {role} = req.user
     if(!role) throw new Error('unauthorized_access');
     if(role !==3) throw new Error('role_must_be_manager');

@@ -26,9 +26,11 @@ app.use(cors({
 // };
 // app.use(cors(corsOptions));
 
-app.use("/", require("./src/routers/index"));
+app.use("/", require("../src/routers/index"));
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`App running on port ${PORT}`);
 });
+
+module.exports = app

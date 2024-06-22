@@ -4,10 +4,11 @@
   "description": "Merry Riana Backend Test",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
-    "lint:fix": "eslint --fix index.js src/**/*.js",
-    "lint": "eslint index.js src/**/*.js"
+    "start": "node api/index.js",
+    "dev": "nodemon api/index.js",
+    "lint:fix": "eslint --fix api/index.js src/**/*.js",
+    "lint": "eslint api/index.js src/**/*.js",
+    "vercel-build": "echo hello"
   },
   "keywords": [],
   "author": "arthuriski",
