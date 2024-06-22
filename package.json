@@ -7,8 +7,7 @@
     "start": "node api/index.js",
     "dev": "nodemon api/index.js",
     "lint:fix": "eslint --fix api/index.js src/**/*.js",
-    "lint": "eslint api/index.js src/**/*.js",
-    "vercel-build": "echo hello"
+    "lint": "eslint api/index.js src/**/*.js"
   },
   "keywords": [],
   "author": "arthuriski",
